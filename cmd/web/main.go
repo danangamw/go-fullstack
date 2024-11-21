@@ -22,7 +22,6 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	// Define a new command-line flag for the MySQL DSN string.
 	dsn := flag.String("dsn", "danangamw:669610@/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
@@ -38,14 +37,12 @@ func main() {
 
 	defer db.Close()
 
-	// Initialize a new template cache...
 	templaeCache, err := newTemplateCache()
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
 
-	// and Add it to the application dependencies
 	app := &application{
 		logger:        logger,
 		snippets:      &models.SnippetModel{DB: db},
