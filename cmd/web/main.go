@@ -20,6 +20,7 @@ import (
 type application struct {
 	logger         *slog.Logger
 	snippets       *models.SnippetModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -44,7 +45,7 @@ func main() {
 
 	defer db.Close()
 
-	templaeCache, err := newTemplateCache()
+	templateCache, err := newTemplateCache()
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
@@ -60,7 +61,8 @@ func main() {
 	app := &application{
 		logger:         logger,
 		snippets:       &models.SnippetModel{DB: db},
-		templateCache:  templaeCache,
+		users:          &models.UserModel{DB: db},
+		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
 	}
@@ -81,7 +83,8 @@ func main() {
 
 	logger.Info("starting server", "addr", *addr)
 
-	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	err = srv.ListenAndServe()
+	// err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	logger.Error(err.Error())
 	os.Exit(1)
 }
